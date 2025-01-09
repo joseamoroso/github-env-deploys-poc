@@ -1,35 +1,44 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+  name: GitHub Actions Demo
+  run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+  on: [push]
 
-jobs:
-  deployment-team:
-    runs-on: ubuntu-latest
-    environment: ${{ github.head_ref.split('/')[0] }}
-    steps:
-      - name: deploy
-        run: echo "Deploying to ${{ github.head_ref.split('/')[0] }}"
+  jobs:
+    extract-team-name:
+      runs-on: ubuntu-latest
+      outputs:
+        team-name: ${{ steps.extract-team-name.outputs.team-name }}
+      steps:
+        - name: extract-team-name
+          id: extract-team-name
+          run: echo "team-name=${BRANCH##*/}" >> $GITHUB_OUTPUT
 
-  deployment-eil:
-    runs-on: ubuntu-latest
-    needs: deployment-team
-    environment: eil
-    steps:
-      - name: deploy
-        run: echo "Deploying to eil"
 
-  deployment-qa:
-    runs-on: ubuntu-latest
-    environment: qa
-    needs: deployment-dev
-    steps:
-      - name: deploy
-        run: echo "Deploying to qa"
+    deployment-team:
+      runs-on: ubuntu-latest
+      environment:  ${{ needs.extract-team-name.outputs.team-name }}
+      steps:
+        - name: deploy
+          run: echo "Deploying to ${{ needs.extract-team-name.outputs.team-name }}
+    deployment-eil:
+      runs-on: ubuntu-latest
+      needs: deployment-team
+      environment: eil
+      steps:
+        - name: deploy
+          run: echo "Deploying to eil"
 
-  deployment-prod:
-    runs-on: ubuntu-latest
-    environment: stg
-    needs: deployment-qa
-    steps:
-      - name: deploy
-        run: echo "Deploying to stg"
+    deployment-qa:
+      runs-on: ubuntu-latest
+      environment: qa
+      needs: deployment-eil
+      steps:
+        - name: deploy
+          run: echo "Deploying to qa"
+
+    deployment-prod:
+      runs-on: ubuntu-latest
+      environment: stg
+      needs: deployment-qa
+      steps:
+        - name: deploy
+          run: echo "Deploying to stg"
