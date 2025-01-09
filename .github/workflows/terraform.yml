@@ -14,6 +14,7 @@ jobs:
   deployment-stg:
     runs-on: ubuntu-latest
     environment: stg
+    needs: deployment-dev
     steps:
       - name: deploy
         run: echo "Deploying to stg"
@@ -21,6 +22,7 @@ jobs:
   deployment-prod:
     runs-on: ubuntu-latest
     environment: prod
+    needs: deployment-stg
     steps:
       - name: deploy
         run: echo "Deploying to prod"
