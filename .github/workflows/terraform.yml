@@ -16,6 +16,7 @@
     deployment-team:
       runs-on: ubuntu-latest
       environment:  ${{ needs.extract-team-name.outputs.team-name }}
+      needs: extract-team-name
       steps:
         - name: deploy
           run: echo "Deploying to ${{ needs.extract-team-name.outputs.team-name }}
