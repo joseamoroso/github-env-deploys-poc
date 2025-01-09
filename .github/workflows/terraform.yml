@@ -12,7 +12,7 @@
           env:
             BRANCH: ${{ github.ref_name }}
           id: extract-team-name
-          run: echo "team-name=${BRANCH##*/}" >> $GITHUB_OUTPUT
+          run: echo "team-name=${BRANCH%%/*}" >> $GITHUB_OUTPUT
 
 
     deployment-team:
