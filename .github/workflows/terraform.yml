@@ -3,26 +3,33 @@ run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 
 jobs:
-
-  deployment-dev:
+  deployment-team:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: ${{ github.head_ref.split('/')[0] }}
     steps:
       - name: deploy
-        run: echo "Deploying to dev"
+        run: echo "Deploying to ${{ github.head_ref.split('/')[0] }}"
 
-  deployment-stg:
+  deployment-eil:
     runs-on: ubuntu-latest
-    environment: stg
+    needs: deployment-team
+    environment: eil
+    steps:
+      - name: deploy
+        run: echo "Deploying to eil"
+
+  deployment-qa:
+    runs-on: ubuntu-latest
+    environment: qa
     needs: deployment-dev
     steps:
       - name: deploy
-        run: echo "Deploying to stg"
+        run: echo "Deploying to qa"
 
   deployment-prod:
     runs-on: ubuntu-latest
-    environment: prod
-    needs: deployment-stg
+    environment: stg
+    needs: deployment-qa
     steps:
       - name: deploy
-        run: echo "Deploying to prod"
+        run: echo "Deploying to stg"
