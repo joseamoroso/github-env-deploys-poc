@@ -9,6 +9,8 @@
         team-name: ${{ steps.extract-team-name.outputs.team-name }}
       steps:
         - name: extract-team-name
+          env:
+            BRANCH: ${{ github.ref_name }}
           id: extract-team-name
           run: echo "team-name=${BRANCH##*/}" >> $GITHUB_OUTPUT
 
