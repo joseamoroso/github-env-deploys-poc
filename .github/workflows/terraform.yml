@@ -14,7 +14,6 @@
           id: extract-team-name
           run: echo "team-name=${BRANCH%%/*}" >> $GITHUB_OUTPUT
 
-
     deployment-team:
       runs-on: ubuntu-latest
       environment:  ${{ needs.extract-team-name.outputs.team-name }}
@@ -38,7 +37,7 @@
         - name: deploy
           run: echo "Deploying to qa"
 
-    deployment-prod:
+    deployment-stg:
       runs-on: ubuntu-latest
       environment: stg
       needs: deployment-qa
